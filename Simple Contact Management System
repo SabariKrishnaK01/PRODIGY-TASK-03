@@ -1,0 +1,86 @@
+import csv
+import os
+
+FILENAME = 'contacts.csv'
+contact_list = []
+
+def load_contacts():
+    if os.path.exists(FILENAME):
+        with open(FILENAME, mode='r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if len(row) == 3:
+                    contact_list.append({'name': row[0], 'phone': row[1], 'email': row[2]})
+
+def save_contacts():
+    with open(FILENAME, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        for contact in contact_list:
+            writer.writerow([contact['name'], contact['phone'], contact['email']])
+    print("Contacts saved successfully.")
+
+def view_contacts():
+    if not contact_list:
+        print("No contacts to display.")
+    else:
+        for i, contact in enumerate(contact_list, 1):
+            print(f"{i}. Name: {contact['name']}, Phone: {contact['phone']}, Email: {contact['email']}")
+
+def add_contact():
+    name = input("Enter name: ")
+    phone = input("Enter phone: ")
+    email = input("Enter email: ")
+    contact_list.append({'name': name, 'phone': phone, 'email': email})
+    print("Contact added.")
+
+def edit_contact():
+    view_contacts()
+    if not contact_list:
+        return
+    index = int(input("Enter contact number to edit: ")) - 1
+    if 0 <= index < len(contact_list):
+        name = input("Enter new name: ")
+        phone = input("Enter new phone: ")
+        email = input("Enter new email: ")
+        contact_list[index] = {'name': name, 'phone': phone, 'email': email}
+        print("Contact updated.")
+    else:
+        print("Invalid contact number.")
+
+def delete_contact():
+    view_contacts()
+    if not contact_list:
+        return
+    index = int(input("Enter contact number to delete: ")) - 1
+    if 0 <= index < len(contact_list):
+        contact_list.pop(index)
+        print("Contact deleted.")
+    else:
+        print("Invalid contact number.")
+
+def main():
+    load_contacts()
+    while True:
+        print("\n--- Contact Management System ---")
+        print("1. Add Contact")
+        print("2. View Contacts")
+        print("3. Edit Contact")
+        print("4. Delete Contact")
+        print("5. Exit")
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            add_contact()
+        elif choice == '2':
+            view_contacts()
+        elif choice == '3':
+            edit_contact()
+        elif choice == '4':
+            delete_contact()
+        elif choice == '5':
+            save_contacts()
+            break
+        else:
+            print("Invalid choice.")
+
+main()
